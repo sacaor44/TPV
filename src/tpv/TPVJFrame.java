@@ -45,6 +45,7 @@ public class TPVJFrame extends JFrame {
     private HashMap<String, ProductoPedido> listaPedidos; // Aqui se almacenan los productos pedidos
     private JPanel jPanelListaProductos; // Panel donde van apareciendo los productos de las distintas familias
     private JTable tabla;
+    private HiloCliente hc;
 
     //---------- CONSTRUCTOR
     /**
@@ -54,6 +55,8 @@ public class TPVJFrame extends JFrame {
         super("TPV");
         crearVentana();
         setVisible(true);
+        hc = new HiloCliente();
+        hc.start();
     }
 
     //----------METODOS
@@ -67,7 +70,7 @@ public class TPVJFrame extends JFrame {
         crearEncabezado();
         crearZonaProductos();
         crearZonaFactura();
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(hc.cerrarVentana());
         add(jPanelTPV);
         pack();
     }
@@ -110,6 +113,7 @@ public class TPVJFrame extends JFrame {
         jButtonSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
+                int i=hc.cerrarVentana();
                 System.exit(0);
             }
         });
