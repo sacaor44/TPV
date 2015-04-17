@@ -21,7 +21,7 @@ public class MasterTPV extends javax.swing.JFrame {
      */
     public MasterTPV() {
         initComponents();
-        HiloServidor hs = new HiloServidor(this);
+        HiloServidor hs = new HiloServidor();
         hs.start();
         listaInternal = new ArrayList<InternalTPV>();
     }

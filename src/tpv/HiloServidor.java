@@ -5,9 +5,14 @@
  */
 package tpv;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,42 +23,44 @@ import javax.swing.JFrame;
  * @author Isul
  */
 public class HiloServidor extends Thread {
-private MasterTPV jf;
-    public HiloServidor(MasterTPV jf) {
-        this.jf=jf;
-    }
-
-    @Override
-    public void run() {
-        int puerto = 2345;
-        final int MAX_LEN = 10;
+    private String msg;
+    private ServerSocket ss;
+    private Socket cs;
+    private PrintWriter out;
+    private BufferedReader in;
+    private int puerto;
+    public HiloServidor() {
+        puerto = 2345;
         try {
-            DatagramSocket mySocket = new DatagramSocket(puerto);
-            byte[] buff = new byte[MAX_LEN];
-            DatagramPacket datagram = new DatagramPacket(buff,MAX_LEN);
-            mySocket.receive(datagram);
-            String msg=new String(buff);
-            msg=msg.trim();
-            //int num = Integer.parseInt(msg.trim());
-            if(msg.trim().equals("T")){
-                System.out.println("RECIBIDO: "+msg);
-                System.out.println("--REALIZADO CORRECTAMENTE--");
-                jf.nuevoInternal();
-                
-            }
-            else if(msg.trim().equals("cerrar")) {
-                jf.cerrarITPV(1);
-            }
-                else{System.out.println("ERROR");
-                    }
-               
-    
+            ss=new ServerSocket(puerto);
+            cs=ss.accept();
+            out = new PrintWriter(cs.getOutputStream(),true);
             
-        } catch (SocketException ex) {
-            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-}
+
+    @Override
+    public void run() {
+        try {
+            
+            ss=new ServerSocket(puerto);
+            cs=ss.accept();
+            out = new PrintWriter(cs.getOutputStream(),true);
+            in= new BufferedReader(new InputStreamReader(cs.getInputStream()));
+            msg= in.readLine();
+            System.out.println("Servidor recibe: "+msg);
+            System.out.println("Servdor envia: "+ msg);
+            out.println(msg);
+        } catch (IOException ex) {
+            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+               
+    
+            
+        } 
+    }
+
 

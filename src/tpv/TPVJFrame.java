@@ -70,7 +70,7 @@ public class TPVJFrame extends JFrame {
         crearEncabezado();
         crearZonaProductos();
         crearZonaFactura();
-        setDefaultCloseOperation(hc.cerrarVentana());
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         add(jPanelTPV);
         pack();
     }
@@ -113,7 +113,7 @@ public class TPVJFrame extends JFrame {
         jButtonSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                int i=hc.cerrarVentana();
+                
                 System.exit(0);
             }
         });

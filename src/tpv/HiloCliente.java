@@ -5,10 +5,14 @@
  */
 package tpv;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,55 +24,36 @@ import javax.swing.JLabel;
  */
 public class HiloCliente extends Thread {
 
-    private DatagramSocket mySocket;
     private String msg;
     private int puerto;
-    private DatagramPacket datagram;
-    private InetAddress host;
-    private byte[] buff;
+    private Socket cs;
+    private PrintWriter out;
+    private BufferedReader in;
 
     public HiloCliente() {
         puerto = 2345;
+        
         try {
-            host = InetAddress.getByName("localhost");
-
-            msg = "T";
-
-            mySocket = new DatagramSocket();
-
-            //mySocket.close();
-        } catch (SocketException ex) {
-            Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
+            cs = new Socket("localhost",puerto);
+            out = new PrintWriter(cs.getOutputStream(),true);
+            in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
         } catch (IOException ex) {
             Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
     }
 
     @Override
     public void run() {
-        buff = msg.getBytes();
-
-        datagram = new DatagramPacket(buff, buff.length, host, puerto);
-        System.out.println("Cliente: ENVIANDO " + msg);
-        try {
-            mySocket.send(datagram);
-        } catch (IOException ex) {
-            Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        msg="T";
+        System.out.println("Cliente enviando: "+msg);
+        out.println(msg);
+        System.out.println("Cliente recibiendo: "+msg);
 
     }
 
-    public int cerrarVentana() {
-        msg="cerrar";
-         buff = msg.getBytes();
-
-        datagram = new DatagramPacket(buff, buff.length, host, puerto);
-        System.out.println("Cliente: ENVIANDO " + msg);
-        try {
-            mySocket.send(datagram);
-        } catch (IOException ex) {
-            Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
-    }
+    /*public int cerrarVentana() {
+        
+    }*/
 }
