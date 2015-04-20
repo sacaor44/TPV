@@ -46,6 +46,7 @@ public class TPVJFrame extends JFrame {
     private JPanel jPanelListaProductos; // Panel donde van apareciendo los productos de las distintas familias
     private JTable tabla;
     private HiloCliente hc;
+    private int num;
 
     //---------- CONSTRUCTOR
     /**
@@ -55,7 +56,7 @@ public class TPVJFrame extends JFrame {
         super("TPV");
         crearVentana();
         setVisible(true);
-        hc = new HiloCliente();
+        hc = new HiloCliente(this,"T");
         hc.start();
     }
 
@@ -113,8 +114,9 @@ public class TPVJFrame extends JFrame {
         jButtonSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                
-                System.exit(0);
+                HiloCliente cerrar =new HiloCliente(num+"");
+                cerrar.start();
+                salir();
             }
         });
         jPanelIzquierdo.add(jButtonSalir);
@@ -185,6 +187,14 @@ public class TPVJFrame extends JFrame {
         jPanelEncabezado.add(jPanelIzquierdo, BorderLayout.WEST);
         jPanelEncabezado.add(jPanelDerecho, BorderLayout.EAST);
         jPanelTPV.add(jPanelEncabezado, BorderLayout.NORTH);
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
     }
 
     /**
@@ -349,6 +359,10 @@ public class TPVJFrame extends JFrame {
     
     private void crearCalculadora (){
         Calculadora calculadora = new Calculadora(this);
+    }
+    public void salir()
+    {
+        dispose();
     }
 
     public static void main(String[] args) {

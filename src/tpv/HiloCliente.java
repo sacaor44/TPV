@@ -29,31 +29,59 @@ public class HiloCliente extends Thread {
     private Socket cs;
     private PrintWriter out;
     private BufferedReader in;
+    private TPVJFrame tpv;
 
-    public HiloCliente() {
+    public HiloCliente(TPVJFrame tpv, String msg) {
         puerto = 2345;
-        
-        try {
-            cs = new Socket("localhost",puerto);
-            out = new PrintWriter(cs.getOutputStream(),true);
-            in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-        } catch (IOException ex) {
-            Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
+        this.tpv = tpv;
+        this.msg = msg;
+    }
+
+    public HiloCliente(String msg) {
+        puerto = 2345;
+        this.msg = msg;
+
     }
 
     @Override
     public void run() {
-        msg="T";
-        System.out.println("Cliente enviando: "+msg);
+        try {
+            cs = new Socket("localhost", puerto);
+            out = new PrintWriter(cs.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+        } catch (IOException ex) {
+            Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.out.println("Cliente enviando: " + msg);
         out.println(msg);
-        System.out.println("Cliente recibiendo: "+msg);
+        try {
+            msg = in.readLine();
+            cs.close();
+            out.close();
+            in.close();
+            int num=-2;
+            try {
+                num = Integer.parseInt(msg.trim());
+            } catch (NumberFormatException e) {
+            }
+            System.out.println("Cliente recibiendo: " + msg);
+            if (msg.trim().equals("X")) {
+                this.stop();
+                tpv.salir();
+            }
+            else if (num>-1) {
+                    tpv.setNum(num);
+                    }
+
+            
+        } catch (IOException ex) {
+            Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
     /*public int cerrarVentana() {
         
-    }*/
+     }*/
 }

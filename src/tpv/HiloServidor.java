@@ -23,44 +23,59 @@ import javax.swing.JFrame;
  * @author Isul
  */
 public class HiloServidor extends Thread {
+
     private String msg;
     private ServerSocket ss;
     private Socket cs;
     private PrintWriter out;
     private BufferedReader in;
     private int puerto;
-    public HiloServidor() {
+    private CTPV ctpv;
+    private int num;
+
+    public HiloServidor(CTPV ctpv) {
+        this.ctpv = ctpv;
         puerto = 2345;
-        try {
-            ss=new ServerSocket(puerto);
-            cs=ss.accept();
-            out = new PrintWriter(cs.getOutputStream(),true);
-            
-        } catch (IOException ex) {
-            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }
 
     @Override
     public void run() {
         try {
-            
-            ss=new ServerSocket(puerto);
-            cs=ss.accept();
-            out = new PrintWriter(cs.getOutputStream(),true);
-            in= new BufferedReader(new InputStreamReader(cs.getInputStream()));
-            msg= in.readLine();
-            System.out.println("Servidor recibe: "+msg);
-            System.out.println("Servdor envia: "+ msg);
-            out.println(msg);
+            ss = new ServerSocket(puerto);
+            while (true) {
+                cs = ss.accept();
+                out = new PrintWriter(cs.getOutputStream(), true);
+
+                in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+                msg = in.readLine();
+                System.out.println("Servidor recibe: " + msg);
+                if (msg.trim().equals("T")) {
+                    if (!ctpv.lleno()) {
+                        num = ctpv.nuevoInternal();
+
+                        System.out.println("Servidor envia: " + num);
+                        out.println(num + "");
+                    } else {
+                        ctpv.lanzarMensaje("No se pueden crear mas TPV");
+
+                        msg="X";
+                        System.out.println("Servidor envia: " + msg);
+                        out.println(msg);
+                    }
+                }
+                else{
+                    try{
+                        num=Integer.parseInt(msg.trim());
+                    }catch(NumberFormatException e){
+                        
+                    }
+                    ctpv.cerrarITPV(num);
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
-               
-    
-            
-        } 
+
     }
-
-
+}
