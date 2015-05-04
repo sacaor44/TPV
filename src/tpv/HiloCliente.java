@@ -67,11 +67,13 @@ public class HiloCliente extends Thread {
             }
             System.out.println("Cliente recibiendo: " + msg);
             if (msg.trim().equals("X")) {
-                this.stop();
                 tpv.salir();
+                this.interrupt();
+                
             }
             else if (num>-1) {
                     tpv.setNum(num);
+                    
                     }
 
             

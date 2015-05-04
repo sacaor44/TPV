@@ -5,6 +5,7 @@
  */
 package tpv;
 
+import datos.Datos;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -58,6 +59,7 @@ public class TPVJFrame extends JFrame {
         setVisible(true);
         hc = new HiloCliente(this,"T");
         hc.start();
+        
     }
 
     //----------METODOS
@@ -72,10 +74,22 @@ public class TPVJFrame extends JFrame {
         crearZonaProductos();
         crearZonaFactura();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         add(jPanelTPV);
         pack();
+        
     }
 
+    
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {                                   
+        HiloCliente cerrar =new HiloCliente(num+"");
+                cerrar.start();
+                salir();
+    }
     /**
      * Crea los componentes dentro del panel del encabezado, este se situa en la
      * zona norte del BorderLayout del JFrame
@@ -346,6 +360,7 @@ public class TPVJFrame extends JFrame {
         BigDecimal big = new BigDecimal(val);
         big = big.setScale(2, RoundingMode.HALF_UP);
         jLabelTotal.setText("" + big);
+        enviar("actualizar");
     }
 
     private void eliminar() {
@@ -360,8 +375,18 @@ public class TPVJFrame extends JFrame {
     private void crearCalculadora (){
         Calculadora calculadora = new Calculadora(this);
     }
+    
+    public void enviar(String accion)
+    {
+        Datos datos = new Datos(num, modeloTabla,jLabelTotal.getText(), accion);
+        int puerto = 3330+num;
+        HiloComCliente hcc = new HiloComCliente(datos, puerto);
+        hcc.start();
+    }
+    
     public void salir()
     {
+        enviar("cerrar");
         dispose();
     }
 

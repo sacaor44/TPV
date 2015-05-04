@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tpv;
+package ctpv;
 
+import ctpv.CTPV;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,18 +33,21 @@ public class HiloServidor extends Thread {
     private int puerto;
     private CTPV ctpv;
     private int num;
+    private int contador;
 
     public HiloServidor(CTPV ctpv) {
         this.ctpv = ctpv;
         puerto = 2345;
+        contador=0;
 
     }
 
     @Override
     public void run() {
         try {
+            System.out.println("Servidor comienza");
             ss = new ServerSocket(puerto);
-            while (true) {
+            while (contador<=6) {
                 cs = ss.accept();
                 out = new PrintWriter(cs.getOutputStream(), true);
 
@@ -53,9 +57,10 @@ public class HiloServidor extends Thread {
                 if (msg.trim().equals("T")) {
                     if (!ctpv.lleno()) {
                         num = ctpv.nuevoInternal();
-
+                        contador++;
                         System.out.println("Servidor envia: " + num);
                         out.println(num + "");
+                        
                     } else {
                         ctpv.lanzarMensaje("No se pueden crear mas TPV");
 
@@ -70,10 +75,15 @@ public class HiloServidor extends Thread {
                     }catch(NumberFormatException e){
                         
                     }
+                    ctpv.mostrarMsgITPV(num);
+                    sleep(2000);
+                    contador--;
                     ctpv.cerrarITPV(num);
                 }
             }
         } catch (IOException ex) {
+            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
 

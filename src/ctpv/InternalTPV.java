@@ -3,52 +3,107 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tpv;
+package ctpv;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author Isul
  */
 public class InternalTPV extends javax.swing.JInternalFrame {
-private DefaultTableModel modeloTabla;
-private String total;
-private int numITPV;
+
+    private TableModel modeloTabla;
+    private String total;
+    private int numITPV,contador;
+
     /**
      * Creates new form InternalTPV
      */
     public InternalTPV(int numITPV) {
-        this.numITPV=numITPV;
+        this.numITPV = numITPV;
         initComponents();
+        contador=0;
     }
 
-    public InternalTPV(DefaultTableModel modeloTabla,String total, int numITPV){
-        this.modeloTabla=modeloTabla;
-        this.total=total;
-        this.numITPV=numITPV;
+    public InternalTPV(TableModel modeloTabla, String total, int numITPV) {
+        this.modeloTabla = modeloTabla;
+        this.total = total;
+        this.numITPV = numITPV;
         initComponents();
         ponerModelo();
-        
+
     }
 
     public int getNumITPV() {
         return numITPV;
     }
 
+    public void setLblAviso(String msg) {
+        lblAviso.setText(msg);
+    }
+
     public void setNumITPV(int numITPV) {
         this.numITPV = numITPV;
     }
-    
-    private void ponerModelo(){
-         jTable1.setModel(modeloTabla);
-         lblTotal.setText(total);
+
+    private void ponerModelo() {
+        jTable1.setModel(modeloTabla);
+        lblTotal.setText(total);
+    }
+
+    public void actualizar(String total, TableModel modelo) {
+        jTable1.setModel(modelo);
+        lblTotal.setText(total);
+    }
+
+    public void cerrar() {
+        if(contador==0){
+        escribirEnFichero();
+        dispose();
+        }
+    }
+
+    private synchronized void escribirEnFichero() {
+        int fila;
+        int col;
+        escribir("TPV - " + numITPV);
+        for (fila = 0; fila < jTable1.getRowCount(); fila++) {
+            String linea="";
+            for (col = 0; col < jTable1.getColumnCount(); col++) {
+                linea=linea + jTable1.getValueAt(fila, col)+"\t";
+            }
+            escribir(linea);
+            linea="";
+        }
+        escribir("TOTAL: "+ lblTotal.getText()+"\n");
+    }
+
+    public void escribir(String txt)  {
+        BufferedWriter out = null;
+        try {
+            out = new BufferedWriter(new FileWriter("C:/datos.txt", true));
+            out.write(txt + "\n");
+            System.out.println(txt);
+        } catch (IOException e) {
+    // error processing code   
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(InternalTPV.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
     
-    public void cerrar()
-    {
-       dispose();
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +120,7 @@ private int numITPV;
         jLabel1 = new javax.swing.JLabel();
         lblTotal = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        lblAviso = new javax.swing.JLabel();
 
         setClosable(true);
 
@@ -91,7 +147,7 @@ private int numITPV;
         );
         pnlTicketLayout.setVerticalGroup(
             pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
         );
 
         pnlTotal.setBorder(javax.swing.BorderFactory.createTitledBorder("Total Ticket"));
@@ -132,27 +188,38 @@ private int numITPV;
                 .addContainerGap(76, Short.MAX_VALUE))
         );
 
+        lblAviso.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblAviso.setForeground(new java.awt.Color(0, 51, 255));
+        lblAviso.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlTicket, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnlTicket, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lblAviso, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlTicket, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(pnlTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(pnlTicket, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(pnlTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32)
+                .addComponent(lblAviso)
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
@@ -164,6 +231,7 @@ private int numITPV;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblAviso;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JPanel pnlTicket;
     private javax.swing.JPanel pnlTotal;

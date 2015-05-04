@@ -1,7 +1,10 @@
-package tpv;
+package ctpv;
 
 import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -12,16 +15,21 @@ import javax.swing.JOptionPane;
 public class CTPV extends javax.swing.JFrame {
 
     private ArrayList<InternalTPV> listaInternal;
+    private int num;
 
     /**
      * Creates new form MasterTPV
      */
     public CTPV() {
         initComponents();
+        Image icono = Toolkit.getDefaultToolkit().getImage("tpv.png");
+        this.setIconImage(icono);
         HiloServidor hs = new HiloServidor(this);
-        setExtendedState(MAXIMIZED_BOTH);
         hs.start();
+        setExtendedState(MAXIMIZED_BOTH);
+
         listaInternal = new ArrayList<InternalTPV>();
+        num = 0;
     }
 
     /**
@@ -43,12 +51,12 @@ public class CTPV extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -90,13 +98,29 @@ public class CTPV extends javax.swing.JFrame {
     }
 
     public int nuevoInternal() {
-        int num = panel.getComponentCount();
+        num++;
+        int puerto = 3330 + num;
         InternalTPV itpv = new InternalTPV(num);
         itpv.setTitle("Terminal " + num);
-        listaInternal.add(num,itpv);
+        listaInternal.add(num - 1, itpv);
         itpv.setVisible(true);
         panel.add(itpv);
+
+        panel.updateUI();
+        panel.repaint();
+        HiloComServidor hcs = new HiloComServidor(puerto, itpv);
+        hcs.start();
         return num;
+    }
+
+    public void mostrarMsgITPV(int num) {
+        InternalTPV itpv;
+        for (int i = 0; i < listaInternal.size(); i++) {
+            itpv = (InternalTPV) listaInternal.get(i);
+            if (itpv.getNumITPV() == num) {
+                itpv.setLblAviso("Servicio completado");
+            }
+        }
     }
 
     public void cerrarITPV(int num) {
@@ -105,28 +129,32 @@ public class CTPV extends javax.swing.JFrame {
             itpv = (InternalTPV) listaInternal.get(i);
             if (itpv.getNumITPV() == num) {
                 listaInternal.remove(i);
+
                 itpv.cerrar();
+                panel.remove(itpv);
+                panel.updateUI();
+                panel.repaint();
+
             }
         }
     }
-    
-    public boolean lleno()
-    {
-        if(panel.getComponentCount()>=6){
+
+    public boolean lleno() {
+        if (panel.getComponentCount() >= 6) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    public void cerrarInternal(int id)
-    {
-        InternalTPV itpv =(InternalTPV) listaInternal.get(id);
+
+    public void cerrarInternal(int id) {
+        InternalTPV itpv = (InternalTPV) listaInternal.get(id);
         itpv.cerrar();
     }
-    public static void lanzarMensaje(String text){
-            JOptionPane.showMessageDialog(null, text);
-     }
 
+    public static void lanzarMensaje(String text) {
+        JOptionPane.showMessageDialog(null, text);
+    }
 
     // Variables declaration - do not modify                     
     private javax.swing.JPanel panel;
