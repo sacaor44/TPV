@@ -102,7 +102,7 @@ public class CTPV extends javax.swing.JFrame {
         int puerto = 3330 + num;
         InternalTPV itpv = new InternalTPV(num);
         itpv.setTitle("Terminal " + num);
-        listaInternal.add(num - 1, itpv);
+        listaInternal.add(itpv);
         itpv.setVisible(true);
         panel.add(itpv);
 
