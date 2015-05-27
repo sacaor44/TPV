@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Collections;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -22,10 +23,12 @@ public class CTPV extends javax.swing.JFrame {
      */
     public CTPV() {
         initComponents();
-        Image icono = Toolkit.getDefaultToolkit().getImage("tpv.png");
-        this.setIconImage(icono);
+        //ImageIcon icono = new ImageIcon(getClass().getResource("/iconos/PC.png"));
+        //setIconImage(icono.getImage());
         HiloServidor hs = new HiloServidor(this);
         hs.start();
+        HiloClienteMonitor hcm = new HiloClienteMonitor();
+        hcm.start();
         setExtendedState(MAXIMIZED_BOTH);
 
         listaInternal = new ArrayList<InternalTPV>();
@@ -130,7 +133,7 @@ public class CTPV extends javax.swing.JFrame {
             if (itpv.getNumITPV() == num) {
                 listaInternal.remove(i);
 
-                itpv.cerrar();
+                //itpv.cerrar();
                 panel.remove(itpv);
                 panel.updateUI();
                 panel.repaint();

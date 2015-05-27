@@ -8,6 +8,8 @@ package ctpv;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -67,13 +69,17 @@ public class InternalTPV extends javax.swing.JInternalFrame {
         if(contador==0){
         escribirEnFichero();
         dispose();
+        }else{
+            dispose();
         }
     }
 
     private synchronized void escribirEnFichero() {
         int fila;
         int col;
-        escribir("TPV - " + numITPV);
+        Calendar cal1 = Calendar.getInstance();
+        String fecha="*"+cal1.get(Calendar.DATE)+"/"+cal1.get(Calendar.MONTH)+"/"+cal1.get(Calendar.YEAR)+"\n-"+cal1.get(Calendar.HOUR_OF_DAY)+":"+cal1.get(Calendar.MINUTE);
+        escribir(fecha);
         for (fila = 0; fila < jTable1.getRowCount(); fila++) {
             String linea="";
             for (col = 0; col < jTable1.getColumnCount(); col++) {
@@ -82,13 +88,14 @@ public class InternalTPV extends javax.swing.JInternalFrame {
             escribir(linea);
             linea="";
         }
-        escribir("TOTAL: "+ lblTotal.getText()+"\n");
+        escribir("#"+ lblTotal.getText()+"\n");
     }
 
     public void escribir(String txt)  {
         BufferedWriter out = null;
+          
         try {
-            out = new BufferedWriter(new FileWriter("C:/datos.txt", true));
+            out = new BufferedWriter(new FileWriter("datos.txt", true));
             out.write(txt + "\n");
             System.out.println(txt);
         } catch (IOException e) {

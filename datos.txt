@@ -1,0 +1,83 @@
+*27/4/2015
+-15:17
+Ballantines	1	3.50	
+Bombay Sapphire	1	3.40	
+Bacardi	1	3.40	
+Jack Daniels	2	7.20	
+Absolut	1	3.30	
+#20.80
+
+*27/4/2015
+-15:19
+Heineken	1	1.70	
+Coronita	1	1.90	
+Shandy	3	4.50	
+Desperados	3	5.40	
+Carlsberg	1	1.80	
+Estrella Galicia	1	1.60	
+#16.90
+
+*27/4/2015
+-15:19
+Bocadillo caliente 1	1	1.80	
+Bocadillo caliente 10	1	1.80	
+Bocadillo caliente 3	2	3.60	
+Bocadillo caliente 2	2	3.60	
+Bocadillo caliente 5	1	1.80	
+#12.60
+
+*27/4/2015
+-15:21
+Larios	3	10.20	
+#10.20
+
+*27/4/2015
+-15:21
+Barcelo	3	10.20	
+DYC	1	3.30	
+#13.50
+
+*27/4/2015
+-15:21
+Bocadillo frio 8	2	3.60	
+Bocadillo frio 4	1	1.80	
+Bocadillo frio 3	1	1.80	
+#7.20
+
+*27/4/2015
+-15:22
+Bombay Sapphire	1	3.40	
+Jack Daniels	2	7.20	
+JB	1	3.50	
+#14.10
+
+*27/4/2015
+-15:24
+Ballantines	3	10.50	
+#10.50
+
+*27/4/2015
+-15:25
+Bollo 5	1	1.50	
+Bollo 15	1	1.50	
+Bollo 10	1	1.50	
+#4.50
+
+*27/4/2015
+-15:25
+Larios	3	10.20	
+#10.20
+
+*27/4/2015
+-15:26
+Franziskaner	1	2.20	
+Leffe	1	2.80	
+St.Bernardus	1	3.20	
+Estrella Galicia	1	1.60	
+#9.80
+
+*27/4/2015
+-15:26
+Chivas Regal	1	3.90	
+#3.90
+
